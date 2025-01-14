@@ -19,7 +19,7 @@ func InitLogger() {
 	}
 
 	// Initialize loggers
-	InfoLogger = log.New(logFile, "INFO: ", log.Ldate|log.Ltime)
-	WarningLogger = log.New(logFile, "WARNING: ", log.Ldate|log.Ltime)
-	ErrorLogger = log.New(logFile, "ERROR: ", log.Ldate|log.Ltime)
+	InfoLogger = log.New(logFile, "INFO: ", log.Ldate|log.Ltime|log.Lmicroseconds)
+	WarningLogger = log.New(logFile, "WARNING: ", log.Ldate|log.Ltime|log.Lmicroseconds)
+	ErrorLogger = log.New(logFile, "ERROR: ", log.Ldate|log.Ltime|log.Lmicroseconds)
 }
