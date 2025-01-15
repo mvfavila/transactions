@@ -132,7 +132,7 @@ func TestRetrievePurchaseTransactionHandler(t *testing.T) {
 		router.ServeHTTP(w, req)
 
 		assert.Equal(t, http.StatusNotFound, w.Code)
-		assert.Equal(t, "{\"error\":\"no exchange rate found\"}", w.Body.String())
+		assert.Equal(t, "{\"error\":\"the purchase cannot be converted to the target currency\"}", w.Body.String())
 	})
 
 	t.Run("success", func(t *testing.T) {

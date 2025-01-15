@@ -93,7 +93,7 @@ func RetrievePurchaseTransactionHandler(db *sql.DB, client *http.Client) gin.Han
 		// Check if rates were found
 		if len(rates) == 0 {
 			util.WarningLogger.Printf("no exchange rate found for country %s", country)
-			c.JSON(http.StatusNotFound, gin.H{"error": "no exchange rate found"})
+			c.JSON(http.StatusNotFound, gin.H{"error": "the purchase cannot be converted to the target currency"})
 			return
 		}
 
