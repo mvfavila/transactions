@@ -1,8 +1,9 @@
 package model
 
 import (
-	"math"
 	"time"
+
+	"github.com/mvfavila/transactions/util"
 )
 
 const expectedDateFormat = "2006-01-02"
@@ -24,16 +25,11 @@ func (t *Transaction) Validate() string {
 		return "Amount must be greater than 0"
 	}
 
-	t.Amount = roundToCents(t.Amount)
+	t.Amount = util.RoundToCents(t.Amount)
 
 	if _, err := time.Parse(expectedDateFormat, t.TransactionDate); err != nil {
 		return "Transaction date must be in YYYY-MM-DD format"
 	}
 
 	return ""
-}
-
-// roundToCents rounds a float64 value to the nearest cent.
-func roundToCents(value float64) float64 {
-	return math.Round(value*100) / 100
 }
