@@ -11,6 +11,15 @@ import (
 	"github.com/mvfavila/transactions/util"
 )
 
+// StoreTransactionHandler handles POST /transactions.
+// It stores a new transaction in the database. The expected body is a JSON object with fields:
+// - description: string
+// - amount: float64
+// - transaction_date: string in YYYY-MM-DD format
+//
+// If the request body is invalid, it will return 400 with the error message.
+// If the transaction is invalid (i.e. description is too long, amount is not positive, or date is invalid), it will return 400 with the error message.
+// If the transaction is successfully stored, it will return 201 with the stored transaction in the response body.
 func StoreTransactionHandler(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var transaction model.Transaction
