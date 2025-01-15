@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -32,10 +33,14 @@ func main() {
 	db := repository.InitializeDB()
 	defer db.Close()
 
+	// Initialize the HTTP client
+	httpClient := &http.Client{}
+
 	// Initialize the router
 	router := gin.Default()
 
 	router.POST(transactionsPath, handler.StoreTransactionHandler(db))
+	router.GET(transactionsPath+"/:id/exchange-rate/:country", handler.RetrievePurchaseTransactionHandler(db, httpClient))
 
 	util.InfoLogger.Println("transactions service listening on port", port)
 	router.Run(port)
