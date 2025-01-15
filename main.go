@@ -1,13 +1,29 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	"github.com/mvfavila/transactions/repository"
 	"github.com/mvfavila/transactions/util"
 )
 
+const (
+	logFile          = "transactions.log"
+	port             = ":8080"
+	transactionsPath = "/transactions"
+)
+
 func main() {
+	// Open or create the log file
+	logFile, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		log.Fatalf("Failed to open log file: %v", err)
+	}
+	defer logFile.Close()
+
 	// Initialize the logger
-	util.InitLogger()
+	util.InitLogger(logFile)
 
 	// Initialize the database
 	db := repository.InitializeDB()

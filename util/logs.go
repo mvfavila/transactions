@@ -1,8 +1,8 @@
 package util
 
 import (
+	"io"
 	"log"
-	"os"
 )
 
 var (
@@ -11,15 +11,9 @@ var (
 	ErrorLogger   *log.Logger
 )
 
-func InitLogger() {
-	// Open or create the log file
-	logFile, err := os.OpenFile("transactions.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-	if err != nil {
-		log.Fatalf("Failed to open log file: %v", err)
-	}
-
+func InitLogger(output io.Writer) {
 	// Initialize loggers
-	InfoLogger = log.New(logFile, "INFO: ", log.Ldate|log.Ltime|log.Lmicroseconds)
-	WarningLogger = log.New(logFile, "WARNING: ", log.Ldate|log.Ltime|log.Lmicroseconds)
-	ErrorLogger = log.New(logFile, "ERROR: ", log.Ldate|log.Ltime|log.Lmicroseconds)
+	InfoLogger = log.New(output, "INFO: ", log.Ldate|log.Ltime|log.Lmicroseconds)
+	WarningLogger = log.New(output, "WARNING: ", log.Ldate|log.Ltime|log.Lmicroseconds)
+	ErrorLogger = log.New(output, "ERROR: ", log.Ldate|log.Ltime|log.Lmicroseconds)
 }
