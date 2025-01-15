@@ -38,7 +38,7 @@ func ApplyMigrations(db *sql.DB) {
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			description TEXT NOT NULL CHECK(length(description) <= 50),
 			amount DECIMAL(10, 2) NOT NULL,
-			transaction_date DATE NOT NULL
+			transaction_date TEXT NOT NULL
 		);
 	`
 
