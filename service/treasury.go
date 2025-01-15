@@ -16,18 +16,15 @@ const treasuryAPIBaseURL = "https://api.fiscaldata.treasury.gov/services/api/fis
 
 // TreasuryRate represents a single exchange rate entry
 type TreasuryRate struct {
-	CurrencyCode  string  `json:"currency_code"`
-	CurrencyName  string  `json:"currency_name"`
+	Currency      string  `json:"currency"`
+	Country       string  `json:"country"`
 	ExchangeRate  float64 `json:"exchange_rate,string"`
-	RateDate      string  `json:"rate_date"`
-	SourceUpdated string  `json:"source_updated"`
+	EffectiveDate string  `json:"effective_date"`
 }
 
 // TreasuryResponse represents the API response structure
 type TreasuryResponse struct {
-	Data  []TreasuryRate `json:"data"`
-	Meta  interface{}    `json:"meta"`
-	Links interface{}    `json:"links"`
+	Data []TreasuryRate `json:"data"`
 }
 
 // FetchExchangeRates fetches exchange rates from the Treasury API
@@ -36,13 +33,13 @@ func FetchExchangeRates(client *http.Client, country string, transaction *model.
 		return nil, fmt.Errorf("country is required")
 	}
 
-	var filter, err = getRequestFilter(country, transaction)
+	var query, err = getRequestQuery(country, transaction)
 	if err != nil {
 		return nil, err
 	}
 
 	// Make an HTTP GET request
-	resp, err := client.Get(fmt.Sprintf("%s?filter=%s", treasuryAPIBaseURL, filter))
+	resp, err := client.Get(fmt.Sprintf("%s?filter=%s", treasuryAPIBaseURL, query))
 	if err != nil {
 		return nil, fmt.Errorf("failed to make request to Treasury API: %w", err)
 	}
@@ -77,19 +74,19 @@ func getDateMinusSixMonths(currentDate string) (string, error) {
 	return "", fmt.Errorf("transaction date must be in YYYY-MM-DD format")
 }
 
-// getRequestFilter generates a filter string for the Treasury API based on the given country and transaction.
+// getRequestQuery generates a filter and sort string for the Treasury API based on the given country and transaction.
 //
 // The filter string is based on the following criteria:
 // - country: the country of the transaction
 // - effective_date: the date of the transaction or the date 6 months prior to the transaction date, whichever is later.
 //
 // If the transaction date is invalid, an error is returned.
-func getRequestFilter(country string, transaction *model.Transaction) (string, error) {
+func getRequestQuery(country string, transaction *model.Transaction) (string, error) {
 	var bottomDate string
 	var err error
 	if bottomDate, err = getDateMinusSixMonths(transaction.TransactionDate); err != nil {
 		return "", err
 	}
 
-	return fmt.Sprintf("country:eq:%s,effective_date:gte:%s,effective_date:lte:%s", country, bottomDate, transaction.TransactionDate), nil
+	return fmt.Sprintf("country:eq:%s,effective_date:gte:%s,effective_date:lte:%s&sort=-effective_date", country, bottomDate, transaction.TransactionDate), nil
 }

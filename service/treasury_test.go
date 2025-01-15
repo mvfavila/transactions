@@ -28,7 +28,21 @@ func TestFetchExchangeRates(t *testing.T) {
 	// Mock response body
 	mockResponseBody := `{
 		"data": [
-			{"currency_code": "USD", "currency_name": "US Dollar", "exchange_rate": "1.0", "rate_date": "2025-01-13", "source_updated": "2025-01-13T12:00:00Z"}
+			{
+				"record_date": "2024-12-31",
+				"country": "Afghanistan",
+				"currency": "Afghani",
+				"country_currency_desc": "Afghanistan-Afghani",
+				"exchange_rate": "70.35",
+				"effective_date": "2024-12-31",
+				"src_line_nbr": "1",
+				"record_fiscal_year": "2025",
+				"record_fiscal_quarter": "1",
+				"record_calendar_year": "2024",
+				"record_calendar_quarter": "4",
+				"record_calendar_month": "12",
+				"record_calendar_day": "31"
+			}
 		],
 		"meta": {},
 		"links": {}
@@ -55,9 +69,9 @@ func TestFetchExchangeRates(t *testing.T) {
 		t.Fatalf("expected 1 rate, got %d", len(rates))
 	}
 
-	expectedRate := "US Dollar"
-	if rates[0].CurrencyName != expectedRate {
-		t.Errorf("expected currency name %s, got %s", expectedRate, rates[0].CurrencyName)
+	expectedRate := 70.35
+	if rates[0].ExchangeRate != expectedRate {
+		t.Errorf("expected currency name %.2f, got %.2f", expectedRate, rates[0].ExchangeRate)
 	}
 }
 
@@ -117,21 +131,21 @@ func TestGetDateMinusSixMonths(t *testing.T) {
 	}
 }
 
-func TestGetRequestFilter(t *testing.T) {
+func TestGetRequestQuery(t *testing.T) {
 	var getRequestFilterTests = []struct {
 		country         string
 		transactionDate string
 		expectedFilter  string
 		expectedError   error
 	}{
-		{"Autralia", "2020-01-01", "country:eq:Autralia,effective_date:gte:2019-07-01,effective_date:lte:2020-01-01", nil},
-		{"Austria", "2020-02-29", "country:eq:Austria,effective_date:gte:2019-08-29,effective_date:lte:2020-02-29", nil},
+		{"Autralia", "2020-01-01", "country:eq:Autralia,effective_date:gte:2019-07-01,effective_date:lte:2020-01-01&sort=-effective_date", nil},
+		{"Austria", "2020-02-29", "country:eq:Austria,effective_date:gte:2019-08-29,effective_date:lte:2020-02-29&sort=-effective_date", nil},
 		{"Brazil", "abc", "", fmt.Errorf("transaction date must be in YYYY-MM-DD format")},
 		{"Czech. Republic", "", "", fmt.Errorf("transaction date must be in YYYY-MM-DD format")},
 	}
 
 	for _, tt := range getRequestFilterTests {
-		gotFilter, gotErr := getRequestFilter(tt.country, &model.Transaction{TransactionDate: tt.transactionDate})
+		gotFilter, gotErr := getRequestQuery(tt.country, &model.Transaction{TransactionDate: tt.transactionDate})
 		if tt.expectedError == nil {
 			assert.NoError(t, gotErr)
 			assert.Equal(t, tt.expectedFilter, gotFilter)
