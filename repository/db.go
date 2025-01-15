@@ -26,13 +26,13 @@ func InitializeDB() *sql.DB {
 		util.ErrorLogger.Fatalf("Failed to connect to SQLite: %v", err)
 	}
 
-	applyMigrations(db)
+	ApplyMigrations(db)
 	return db
 }
 
-// applyMigrations applies the necessary database migrations to the given
+// ApplyMigrations applies the necessary database migrations to the given
 // database connection.
-func applyMigrations(db *sql.DB) {
+func ApplyMigrations(db *sql.DB) {
 	migration := `
 		CREATE TABLE IF NOT EXISTS transactions (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -13,7 +13,7 @@ func TestApplyMigrations(t *testing.T) {
 		t.Fatalf("Failed to connect to SQLite: %v", err)
 	}
 
-	applyMigrations(db)
+	ApplyMigrations(db)
 
 	// Check if the table exists
 	var result string

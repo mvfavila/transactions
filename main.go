@@ -4,6 +4,9 @@ import (
 	"log"
 	"os"
 
+	"github.com/gin-gonic/gin"
+
+	"github.com/mvfavila/transactions/handler"
 	"github.com/mvfavila/transactions/repository"
 	"github.com/mvfavila/transactions/util"
 )
@@ -29,6 +32,11 @@ func main() {
 	db := repository.InitializeDB()
 	defer db.Close()
 
-	util.InfoLogger.Println("transactions service started")
-	println("Hello World")
+	// Initialize the router
+	router := gin.Default()
+
+	router.POST(transactionsPath, handler.StoreTransactionHandler(db))
+
+	util.InfoLogger.Println("transactions service listening on port", port)
+	router.Run(port)
 }
