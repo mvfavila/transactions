@@ -28,4 +28,4 @@ go.work.sum
 *.log
 
 # database
-transactions.db
+*.db

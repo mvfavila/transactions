@@ -15,6 +15,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"gopkg.in/DATA-DOG/go-sqlmock.v1"
 
+	"github.com/mvfavila/transactions/config"
 	"github.com/mvfavila/transactions/model"
 	"github.com/mvfavila/transactions/repository"
 	"github.com/mvfavila/transactions/util"
@@ -33,6 +34,9 @@ func (m *mockRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) 
 }
 
 func TestStoreTransactionHandler(t *testing.T) {
+	// Load default config for testing
+	config.LoadDefaultConfig()
+
 	var buf bytes.Buffer
 
 	// Initialize logger with in-memory buffer

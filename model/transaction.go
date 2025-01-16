@@ -3,10 +3,9 @@ package model
 import (
 	"time"
 
+	"github.com/mvfavila/transactions/config"
 	"github.com/mvfavila/transactions/util"
 )
-
-const expectedDateFormat = "2006-01-02"
 
 type Transaction struct {
 	ID              int     `json:"id"`
@@ -27,7 +26,7 @@ func (t *Transaction) Validate() string {
 
 	t.Amount = util.RoundToCents(t.Amount)
 
-	if _, err := time.Parse(expectedDateFormat, t.TransactionDate); err != nil {
+	if _, err := time.Parse(config.AppConfig.ExpectedDateFormat, t.TransactionDate); err != nil {
 		return "Transaction date must be in YYYY-MM-DD format"
 	}
 

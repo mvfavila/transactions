@@ -2,6 +2,8 @@ package model
 
 import (
 	"testing"
+
+	"github.com/mvfavila/transactions/config"
 )
 
 func TestTransactionValidate(t *testing.T) {
@@ -68,6 +70,9 @@ func TestTransactionValidate(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// Load default config for testing
+			config.LoadDefaultConfig()
+
 			result := tt.transaction.Validate()
 			if result != tt.expectedResult {
 				t.Errorf("Validate() = %v, want %v", result, tt.expectedResult)

@@ -9,19 +9,17 @@ import (
 	"github.com/mvfavila/transactions/util"
 )
 
-const dbFile = "transactions.db"
-
 // InitializeDB initializes the database.
-func InitializeDB() *sql.DB {
-	if _, err := os.Stat(dbFile); os.IsNotExist(err) {
-		file, err := os.Create(dbFile)
+func InitializeDB(driver string, source string) *sql.DB {
+	if _, err := os.Stat(source); os.IsNotExist(err) {
+		file, err := os.Create(source)
 		if err != nil {
 			util.ErrorLogger.Fatalf("Failed to create database file: %v", err)
 		}
 		file.Close()
 	}
 
-	db, err := sql.Open("sqlite3", dbFile)
+	db, err := sql.Open(driver, source)
 	if err != nil {
 		util.ErrorLogger.Fatalf("Failed to connect to SQLite: %v", err)
 	}

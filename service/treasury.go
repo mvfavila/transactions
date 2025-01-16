@@ -7,12 +7,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/mvfavila/transactions/config"
 	"github.com/mvfavila/transactions/model"
 )
-
-// treasuryAPIBaseURL is the base URL for the Treasury Reporting Rates of Exchange API
-const expectedDateFormat = "2006-01-02"
-const treasuryAPIBaseURL = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/rates_of_exchange"
 
 // TreasuryRate represents a single exchange rate entry
 type TreasuryRate struct {
@@ -39,7 +36,7 @@ func FetchExchangeRates(client *http.Client, country string, transaction *model.
 	}
 
 	// Make an HTTP GET request
-	resp, err := client.Get(fmt.Sprintf("%s?filter=%s", treasuryAPIBaseURL, query))
+	resp, err := client.Get(fmt.Sprintf("%s?filter=%s", config.AppConfig.TreasuryAPIBaseURL, query))
 	if err != nil {
 		return nil, fmt.Errorf("failed to make request to Treasury API: %w", err)
 	}
@@ -67,8 +64,8 @@ func FetchExchangeRates(client *http.Client, country string, transaction *model.
 
 // getDateMinusSixMonths calculates the date that is six months prior to the given currentDate.
 func getDateMinusSixMonths(currentDate string) (string, error) {
-	if d, err := time.Parse(expectedDateFormat, currentDate); err == nil {
-		return d.AddDate(0, -6, 0).Format(expectedDateFormat), nil
+	if d, err := time.Parse(config.AppConfig.ExpectedDateFormat, currentDate); err == nil {
+		return d.AddDate(0, -6, 0).Format(config.AppConfig.ExpectedDateFormat), nil
 	}
 
 	return "", fmt.Errorf("transaction date must be in YYYY-MM-DD format")

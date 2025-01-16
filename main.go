@@ -1,28 +1,43 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/mvfavila/transactions/config"
 	"github.com/mvfavila/transactions/handler"
 	"github.com/mvfavila/transactions/repository"
 	"github.com/mvfavila/transactions/util"
 )
 
-const (
-	logFile          = "transactions.log"
-	port             = ":8080"
-	transactionsPath = "/transactions"
-)
+const transactionsPath = "/transactions"
 
 func main() {
-	// Open or create the log file
-	logFile, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// Determine the environment
+	env := os.Getenv("APP_ENV")
+	if env == "" {
+		env = "dev" // Default to "dev" environment
+	} else if env == "prod" {
+		// Set gin to release mode for production
+		gin.SetMode(gin.ReleaseMode)
+	}
+
+	// Load configuration
+	err := config.LoadConfig(env)
 	if err != nil {
-		log.Fatalf("Failed to open log file: %v", err)
+		log.Fatalf("failed to load configuration: %v", err)
+	}
+
+	appConfig := config.AppConfig
+
+	// Open or create the log file
+	logFile, err := os.OpenFile(appConfig.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		log.Fatalf("failed to open log file: %v", err)
 	}
 	defer logFile.Close()
 
@@ -30,7 +45,7 @@ func main() {
 	util.InitLogger(logFile)
 
 	// Initialize the database
-	db := repository.InitializeDB()
+	db := repository.InitializeDB(appConfig.Database.Driver, appConfig.Database.Source)
 	defer db.Close()
 
 	// Initialize the HTTP client
@@ -42,6 +57,6 @@ func main() {
 	router.POST(transactionsPath, handler.StoreTransactionHandler(db))
 	router.GET(transactionsPath+"/:id/exchange-rate/:country", handler.RetrievePurchaseTransactionHandler(db, httpClient))
 
-	util.InfoLogger.Println("transactions service listening on port", port)
-	router.Run(port)
+	util.InfoLogger.Println("transactions service listening on port", appConfig.Port)
+	router.Run(fmt.Sprintf(":%s", appConfig.Port))
 }
