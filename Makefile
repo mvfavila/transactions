@@ -1,6 +1,7 @@
 # variables
 
 CONTAINER_NAME=transactions
+PORT = 8080
 
 # vendoring
 
@@ -36,3 +37,18 @@ lint:
 .PHONY: run
 run:
 	APP_ENV=dev go run .
+
+# Exec - docker
+
+.PHONY: run-docker
+run-docker:
+	docker run --rm -it \
+	-e APP_ENV='dev' \
+	-p $(PORT):$(PORT) \
+	$(CONTAINER_NAME)
+
+# Build
+
+.PHONY: build	
+build:
+	docker build --no-cache -t $(CONTAINER_NAME) .

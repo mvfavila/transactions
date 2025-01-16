@@ -40,14 +40,14 @@ func loadConfigFromFile(env string) (*Config, error) {
 
 	file, err := os.Open(fileName)
 	if err != nil {
-		return nil, fmt.Errorf("failed to open config file: %w", err)
+		return nil, fmt.Errorf("failed to open config file %s: %w", fileName, err)
 	}
 	defer file.Close()
 
 	var cfg Config
 	decoder := yaml.NewDecoder(file)
 	if err := decoder.Decode(&cfg); err != nil {
-		return nil, fmt.Errorf("failed to decode config file: %w", err)
+		return nil, fmt.Errorf("failed to decode config file %s: %w", fileName, err)
 	}
 
 	return &cfg, nil
