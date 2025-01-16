@@ -35,4 +35,4 @@ lint:
 
 .PHONY: run
 run:
-	go run .
+	APP_ENV=dev go run .

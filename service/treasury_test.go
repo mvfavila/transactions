@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/mvfavila/transactions/config"
 	"github.com/mvfavila/transactions/model"
 	"github.com/stretchr/testify/assert"
 )
@@ -25,6 +26,9 @@ func (m *mockRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) 
 }
 
 func TestFetchExchangeRates(t *testing.T) {
+	// Load default config for testing
+	config.LoadDefaultConfig()
+
 	// Mock response body
 	mockResponseBody := `{
 		"data": [
