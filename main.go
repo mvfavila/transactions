@@ -9,6 +9,7 @@ import (
 
 	"github.com/mvfavila/transactions/config"
 	"github.com/mvfavila/transactions/handler"
+	"github.com/mvfavila/transactions/middleware"
 	"github.com/mvfavila/transactions/repository"
 	"github.com/mvfavila/transactions/util"
 )
@@ -50,8 +51,14 @@ func main() {
 	httpClient := &http.Client{}
 
 	// Initialize the router
-	router := gin.Default()
+	router := gin.New()
 
+	// Attach middleware
+	router = middleware.Attach(router)
+
+	router.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{"status": "ok"})
+	})
 	router.POST(transactionsPath, handler.StoreTransactionHandler(db))
 	router.GET(transactionsPath+"/:id/exchange-rate/:country", handler.RetrievePurchaseTransactionHandler(db, httpClient))
 
