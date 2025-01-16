@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -20,24 +19,23 @@ func main() {
 	// Determine the environment
 	env := os.Getenv("APP_ENV")
 	if env == "" {
-		env = "dev" // Default to "dev" environment
-	} else if env == "prod" {
-		// Set gin to release mode for production
+		env = "prod" // Default to prod if APP_ENV is not set
+	}
+
+	if env != "dev" {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
 	// Load configuration
-	err := config.LoadConfig(env)
-	if err != nil {
-		log.Fatalf("failed to load configuration: %v", err)
+	if err := config.LoadConfig(env); err != nil {
+		log.Fatalf("Failed to load config: %v", err)
 	}
-
 	appConfig := config.AppConfig
 
 	// Open or create the log file
 	logFile, err := os.OpenFile(appConfig.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
-		log.Fatalf("failed to open log file: %v", err)
+		log.Fatalf("Failed to open log file: %v", err)
 	}
 	defer logFile.Close()
 
@@ -57,6 +55,9 @@ func main() {
 	router.POST(transactionsPath, handler.StoreTransactionHandler(db))
 	router.GET(transactionsPath+"/:id/exchange-rate/:country", handler.RetrievePurchaseTransactionHandler(db, httpClient))
 
+	// Start the application
 	util.InfoLogger.Println("transactions service listening on port", appConfig.Port)
-	router.Run(fmt.Sprintf(":%s", appConfig.Port))
+	if err := router.Run(":" + appConfig.Port); err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
 }

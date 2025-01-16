@@ -1,0 +1,7 @@
+log_file: "transactions.log"
+port: "8080"
+database:
+  driver: "sqlite3"
+  source: "transactions.db"
+treasury_api_base_url: "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/rates_of_exchange"
+expected_date_format: "2006-01-02"
