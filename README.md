@@ -13,13 +13,13 @@ Accepts and stores (i.e., persists) a purchase transaction with a description, t
 
 Based upon purchase transactions previously submitted and stored, this application provides a way to retrieve the stored purchase transactions converted to currencies supported by the Treasury Reporting Rates of Exchange API based upon the exchange rate active for the date of the purchase.
 
-The retrieved purchase includes the identifier, the description, the transaction date, the original US dollar purchase amount, the exchange rate used, and the converted amount based upon the specified currency’s exchange rate for the date of the purchase.
+The retrieved purchase transaction includes the unique identifier, description, transaction date, original purchase amount in US dollars, exchange rate used, and the converted amount based on the specified currency’s exchange rate for the transaction date.
 
 ### Currency conversion details
 
 - When converting between currencies, the caller will not receive an exact date match back, but a currency conversion rate less than or equal to the purchase date from within the last 6 months.
 - If no currency conversion rate is available within 6 months equal to or before the purchase date, an error will be returned stating the purchase cannot be converted to the target currency.
-- The converted purchase amount to the target currency will be rounded to two decimal places (i.e., cent).
+- The converted purchase amount will be rounded to two decimal places (i.e., to the nearest cent).
 
 # How to run application
 
@@ -33,7 +33,7 @@ Open the terminal in the application directory and execute the below commands:
     
     > APP_ENV=dev go run .
 
-2. As a docker container
+2. As a Docker container
 
     > make build
     > make run-docker
@@ -45,7 +45,7 @@ Open the terminal in the application directory and execute the below commands:
 
 # Making local requests to the API with `curl`
 
-Alternatively, an [Insomnia](https://insomnia.rest/) collection which includes API sample calls can be found in the `docs` directory.
+Alternatively, an [Insomnia](https://insomnia.rest/) collection with sample API calls is available in the `docs` directory.
 
 ## Adding an exchange transaction
 
@@ -69,6 +69,6 @@ Sample:
 
 - [go 1.22](https://tip.golang.org/doc/go1.22) used to code application.
 - An [Insomnia](https://insomnia.rest/) collection which includes API sample calls can be found in the `docs` directory.
-- Logs will be generated in a `.log` file in the root directory of the application.
-- The database file will be generated as a `.db` file in the root directory of the application.
+- Logs are generated as `.log` files in the application's root directory.
+- The database is stored as a `.db` file in the application's root directory.
 - Depends on the [Treasury Reporting Rates of Exchange API](https://fiscaldata.treasury.gov/datasets/treasury-reporting-rates-exchange/treasury-reporting-rates-of-exchange)
