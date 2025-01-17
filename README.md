@@ -49,7 +49,7 @@ Alternatively, an [Insomnia](https://insomnia.rest/) collection with sample API 
 
 ## Adding an exchange transaction
 
-`curl -X POST http://localhost:8080/transactions -H "Content-Type: application/json" -d '{"description": "{TRANSACTION_DESCRIPTION}", "amount": AMOUNT, "transaction_date": "TRANSACTION_DATE"}'`
+`curl -X POST http://localhost:8080/transactions -H "Content-Type: application/json" -d '{"description": "<TRANSACTION_DESCRIPTION>", "amount": <TRANSACTION_AMOUNT>, "transaction_date": "<TRANSACTION_DATE>"'`
 
 Sample:
 
@@ -59,7 +59,7 @@ Sample:
 
 ## Fetching an exchange rate for a country
 
-`curl http://localhost:8080/transactions/{TRANSACTION_ID}/exchange-rate/{COUNTRY_NAME}`
+`curl http://localhost:8080/transactions/<TRANSACTION_ID>/exchange-rate/<COUNTRY_NAME>`
 
 Sample:
 
